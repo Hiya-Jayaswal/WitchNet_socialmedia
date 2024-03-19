@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+    <link rel="stylesheet" href="/css/chatbox.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-list">
+            <li class="navbar-item"><a href="/home">Home</a></li>
+            <li class="navbar-item"><a href="/chatbox">Chat</a></li>
+            <li class="navbar-item"><a href="/setting">Settings</a></li>
+            <li class="navbar-item"><a href="/help">Help?</a></li>
+            <li class="navbar-item"><a href="/terms">Terms and Conditions</a></li>
+            <li class="navbar-item"><a href="http://localhost:3000">Log Out</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        
+            <img src="https://i.postimg.cc/pLkZ99Fm/o-removebg-preview.png" alt="Logo" class="logo" style="height: 100px; ">
+            <h1 class="title"> Chat Box </h1>
+        
+    
+        <div class="conversation">
+            <div class="user-list">
+                <h2>Users</h2>
+                <ul>
+                    {{#each users}}
+                    <li onclick="openChat('{{ currentUser }}', '{{ this.name }}')">{{ this.name }}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        
+            <div class="chat">
+                <div class="chat-header">
+                    <h2 id="chat-header-title">Chat with User</h2>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    
+                </div>
+                <div class="chat-input" id="chat-input">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = "{{ currentUser }}"; 
+        let selectedUser = ''; 
+        let messages = {}; 
+
+        function openChat(sender, receiver) {
+            selectedUser = receiver; 
+            document.getElementById('chat-header-title').innerText = 'Chat with ' + receiver;
+            displayDMOptions(); 
+            displayChatMessages(); 
+        }
+
+        function displayDMOptions() {
+            const chatInput = document.getElementById('chat-input');
+            chatInput.innerHTML = ''; 
+            
+            if (selectedUser !== '') {
+                const messageInput = document.createElement('textarea');
+                messageInput.id = 'message-input';
+                messageInput.placeholder = 'Type your message...';
+                chatInput.appendChild(messageInput);
+                
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.id = 'file-input';
+                fileInput.accept = 'image/*';
+                chatInput.appendChild(fileInput);
+
+                const cancelButton = document.createElement('button');
+                cancelButton.textContent = 'Cancel';
+                cancelButton.type = 'button';
+                cancelButton.addEventListener('click', cancelFileUpload);
+                chatInput.appendChild(cancelButton);
+                
+                const sendButton = document.createElement('button');
+                sendButton.textContent = 'Send';
+                sendButton.type = 'submit';
+                sendButton.addEventListener('click', sendMessage);
+                chatInput.appendChild(sendButton);
+            }
+        }
+
+        function cancelFileUpload() {
+            document.getElementById('file-input').value = ''; 
+        }
+
+        function displayChatMessages() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = ''; 
+            
+            if (messages[selectedUser]) {
+                messages[selectedUser].forEach(message => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message');
+
+                    if (message.startsWith('data:image/')) {
+                        const img = document.createElement('img');
+                        img.src = message;
+                        messageDiv.appendChild(img);
+                    } else {
+                        messageDiv.textContent = message;
+                    }
+
+                    chatMessages.appendChild(messageDiv);
+                });
+            }
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const message = document.getElementById('message-input').value;
+            const file = document.getElementById('file-input').files[0];
+
+            if (!messages[selectedUser]) {
+                messages[selectedUser] = []; 
+            }
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const dataURL = event.target.result;
+                    messages[selectedUser].push(dataURL); 
+                    displayChatMessages(); 
+                };
+                reader.readAsDataURL(file);
+            } else {
+                messages[selectedUser].push(message);
+                displayChatMessages(); 
+            }
+
+            botResponse(message);
+            
+            document.getElementById('message-input').value = ''; 
+        }
+
+        function botResponse(message) {
+            const BOT_MSGS = [
+                "Bot--  Thats a nice photo",
+                "Bot--  I'm just a bot. I don't understand human commands.",
+                "Bot--  Sorry, I can't help with that.",
+                "Bot--  Please rephrase your command.",
+                "Bot--  I'm still learning. Can you try again?",
+                "Bot--  I'm processing your request. Please wait a moment.",
+                "Bot--  How can I assist you today?",
+                "Bot--  I'm here to help. What can I do for you?",
+                "Bot--  I'm sorry, I didn't catch that. Could you repeat your command?",
+                "Bot--  Let me see what I can do.",
+                "Bot--  Nice there witch!.",
+                "Bot--  Hmm... That's an interesting request.",
+                "Bot--  I'm not sure I understand. Can you provide more details?",
+                "Bot--  Did someone mention witches and wizards? I'm always ready for some magical conversation!",
+                "Bot--  Witches and wizards, you say? Let's delve into the secrets of the magical world!",
+                "Bot--  Beware! Mentioning witches and wizards might summon some enchanting discussions!",
+                "Bot--  Ah, the world of magic! Witches and wizards have always intrigued me.",
+                "Bot--  I'm processing your request. Please hold.",
+                "Bot--  I'm unable to fulfill your request at the moment.",
+                "Bot--  Let me consult with my database for an answer.",
+                "Bot--  I'm analyzing your command. This may take a moment.",
+                "Bot--  I'm sorry, I can't comply with that request.",
+                "Bot--  I'm searching for a solution. Please be patient.",
+                "Bot--  I'm working on it. Thank you for your patience.",
+                "Bot--  I'm sorry, I'm not programmed to do that.",
+                "Bot--  I'm still learning the ropes. Can you try something simpler?"
+            ];
+
+            const randomIndex = Math.floor(Math.random() * BOT_MSGS.length);
+            const botMessage = BOT_MSGS[randomIndex];
+            const delay = botMessage.split(" ").length * 100; 
+
+            setTimeout(() => {
+                messages[selectedUser].push(botMessage);
+                displayChatMessages(); 
+            }, delay);
+        }
+    </script>
+</body>
+</html>

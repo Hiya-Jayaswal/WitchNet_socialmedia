@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <ul class="navbar-list">
+      <li class="navbar-item"><a href="/home">Home</a></li>
+      <li class="navbar-item"><a href="/chatbox">Chat</a></li>
+      <li class="navbar-item"><a href="/setting">Settings</a></li>
+      <li class="navbar-item"><a href="/help">Help?</a></li>
+      <li class="navbar-item"><a href="/terms">Terms and Conditions</a></li>
+      <li class="navbar-item"><a href="http://localhost:3000">Log Out</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <div class="card">
+      <div class="row">
+        <div class="col">
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <img src="https://i.postimg.cc/pLkZ99Fm/o-removebg-preview.png" alt="Logo" class="logo"
+              style="height: 120px;">
+            <h1>Settings</h1>
+          </div>
+          <div class="section">
+            <h2>Change Password</h2>
+            <input type="text" placeholder="Name" id="name"> <br>
+            <input type="password" placeholder="Current Password" id="currentPassword"> <br>
+            <input type="password" placeholder="New Password" id="newPassword"> <br>
+            <input type="password" placeholder="Confirm New Password" id="confirmNewPassword"> <br>
+            <button onclick="changePassword()" class="pswd">Change Password</button>
+          </div>
+
+          <div class="section">
+            <h2>Notification Settings</h2>
+            <label>
+              <input type="checkbox" class="custom-checkbox" checked>
+              <span>Enable Notifications</span>
+            </label>
+          </div>
+
+          <div class="section">
+            <h2>Privacy Settings</h2>
+            <select>
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+              <option value="friends">Friends Only</option>
+            </select>
+          </div>
+
+          <div class="section">
+            <h2>Language Settings</h2>
+            <select>
+              <option value="English">English</option>
+              <option value="Spanish">Witchlang</option>
+            </select>
+          </div>
+
+          <div class="section">
+            <h2>Account Settings</h2>
+            <p>Manage your account preferences and settings here.</p>
+          </div>
+
+          <div class="section">
+            <h2>Help and Support</h2>
+            <p>Get <a href="/help">help, FAQs</a>, and support resources for using our platform.</p>
+          </div>
+
+          <div class="section">
+            <h2>Terms & Conditions</h2>
+            <p>Read our <a href="/terms">Terms and Conditions</a> for using our services.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function changePassword() {
+      const name = document.getElementById('name').value;
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+      if (newPassword !== confirmNewPassword) {
+        alert('New passwords do not match.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name,
+            currentPassword,
+            newPassword
+          })
+        });
+
+        const data = await response.json();
+        alert(data.message);
+      } catch (error) {
+        console.error(error);
+        alert('An error occurred. Please try again later.');
+      }
+    }
+  </script>
+</body>
+
+</html>

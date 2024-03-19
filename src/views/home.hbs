@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/home.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-list">
+            <li class="navbar-item"><a href="/home">Home</a></li>
+            <li class="navbar-item"><a href="/chatbox">Chat</a></li>
+            <li class="navbar-item"><a href="/settings">Settings</a></li>
+            <li class="navbar-item"><a href="/help">Help?</a></li>
+            <li class="navbar-item"><a href="/terms">Terms and Conditions</a></li>
+            <li class="navbar-item"><a href="http://localhost:3000">Log Out</a></li>
+        </ul>
+    </nav>
+
+    <!-- Form for adding new posts -->
+    <div class="container">
+        <div class="post-container">
+            <form id="addPostForm" enctype="multipart/form-data">
+                <input id="imageInput" type="file" accept="image/*" required>
+                <input id="titleInput" type="text" placeholder="Title" required>
+                <textarea id="commentInput" placeholder="Comment"></textarea>
+                <button type="submit">Add Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Display existing posts -->
+    <div class="container" id="postList">
+        <!-- Posts will be dynamically added here -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Array to store posts
+            let posts = [];
+
+            // Function to render posts
+            function renderPosts() {
+                $('#postList').empty(); // Clear previous posts
+                posts.forEach(post => {
+                    let postHtml = `
+                        <div class="post-container">
+                            <h3>${post.title}</h3>
+                            <img class="post-image" src="${post.imageUrl}" alt="Post Image">
+                            <p>${post.comment}</p>
+                            <button class="like-btn" data-post-id="${post.id}">Like</button>
+                            <button class="comment-btn" data-post-id="${post.id}">Comment</button>
+                            <div class="comment-section" id="commentSection-${post.id}">
+                                <!-- Comments will be dynamically added here -->
+                            </div>
+                            <textarea class="comment-input" data-post-id="${post.id}" placeholder="Add a comment"></textarea>
+                            <button class="comment-submit-btn" data-post-id="${post.id}">Submit</button>
+                        </div>
+                    `;
+                    $('#postList').append(postHtml);
+                });
+            }
+
+            // Submit new post form
+            $('#addPostForm').submit(function (event) {
+                event.preventDefault();
+                let formData = new FormData(this);
+                let newPost = {
+                    id: posts.length + 1,
+                    title: formData.get('title'),
+                    imageUrl: URL.createObjectURL($('#imageInput')[0].files[0]),
+                    comment: formData.get('comment'),
+                    likes: 0,
+                    comments: []
+                };
+                posts.push(newPost);
+                renderPosts();
+                // Clear form inputs
+                $('#imageInput').val('');
+                $('#titleInput').val('');
+                $('#commentInput').val('');
+            });
+
+            // Like button click handler
+            $(document).on('click', '.like-btn', function () {
+                let postId = $(this).data('post-id');
+                let post = posts.find(p => p.id === postId);
+                post.likes++;
+                renderPosts();
+            });
+
+            // Comment button click handler
+            $(document).on('click', '.comment-btn', function () {
+                let postId = $(this).data('post-id');
+                $(`#commentSection-${postId}`).toggle();
+            });
+
+            // Comment submit button click handler
+            $(document).on('click', '.comment-submit-btn', function () {
+                let postId = $(this).data('post-id');
+                let comment = $(`.comment-input[data-post-id="${postId}"]`).val();
+                let post = posts.find(p => p.id === postId);
+                post.comments.push(comment);
+                renderPosts();
+                // Clear comment input
+                $(`.comment-input[data-post-id="${postId}"]`).val('');
+            });
+        });
+    </script>
+</body>
+</html>

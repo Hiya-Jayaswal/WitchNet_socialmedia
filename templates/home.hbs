@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/home.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-list">
+            <li class="navbar-item"><a href="/home">Home</a></li>
+            <li class="navbar-item"><a href="/chatbox">Chat</a></li>
+            <li class="navbar-item"><a href="/setting">Settings</a></li>
+            <li class="navbar-item"><a href="/help">Help?</a></li>
+            <li class="navbar-item"><a href="/terms">Terms and Conditions</a></li>
+            <li class="navbar-item"><a href="http://localhost:3000">Log Out</a></li>
+        </ul>
+    </nav>
+
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <img src="https://i.postimg.cc/pLkZ99Fm/o-removebg-preview.png" alt="Logo" class="logo" style="height: 100px;">
+        <h1 style="margin-left: 20px;">Explore Feed</h1>
+    </div>
+
+    <!-- Form for adding new posts -->
+    <div class="container">
+        <div class="post-container">
+            <form id="addPostForm" enctype="multipart/form-data">
+                <input id="imageInput" type="file" accept="image/*" required>
+                <input id="titleInput" type="text" placeholder="Title" required>
+                <!-- Removed comment input -->
+                <button type="submit">Add Post</button>
+            </form>
+        </div> 
+    </div>
+
+    <!-- Display existing posts -->
+    <div class="posts" id="postList">
+        <!-- Posts will be dynamically added here -->
+    </div>
+
+    <!-- Modal for displaying full-size image -->
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="fullImage">
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Array to store posts
+        let posts = [];
+
+        // Function to render posts
+        function renderPosts() {
+            $('#postList').empty(); // Clear previous posts
+            posts.forEach(post => {
+                let postHtml = `
+                    <div class="post-container">
+                        <img class="post-image" src="${post.imageUrl}" alt="Post Image" data-post-id="${post.id}">
+                        <h3>${post.title || 'Untitled'}</h3> <!-- Display title above the image -->
+                        <!-- Removed comment paragraph -->
+                        <button class="like-btn" data-post-id="${post.id}">Like <span class="like-count">${post.likes}</span></button>
+                        <button class="comment-btn" data-post-id="${post.id}">Comment</button>
+                        <div class="comment-section" id="commentSection-${post.id}">
+                            <!-- Comments will be dynamically added here -->
+                            ${post.comments.map(comment => `<p>${comment}</p>`).join('')}
+                        <div class="comment-input-container">
+    <textarea class="comment-input" data-post-id="${post.id}" placeholder="Add a comment"></textarea>
+    <button class="comment-submit-btn" data-post-id="${post.id}">Submit</button>
+</div>
+
+                `;
+                $('#postList').append(postHtml);
+            });
+        }
+
+ 
+function generateDummyPosts() {
+    const imageNames = [
+        'meme1.jpg',
+        'meme2.jpg',
+        'meme3.jpg',
+        'meme4.jpg',
+        'meme5.jpg',
+        'meme6.jpg',
+        'meme7.jpg',
+        'meme8.jpg'
+    ];
+
+    for (let i = 0; i < imageNames.length; i++) {
+        let newPost = {
+            id: i + 1,
+            title: `Witch Meme ${i + 1}`,
+            imageUrl: `/images/${imageNames[i]}`, 
+            likes: Math.floor(Math.random() * 100),
+            comments: [] 
+        };
+        posts.push(newPost); 
+    }
+}
+        
+        generateDummyPosts();
+
+        
+        renderPosts();
+
+        
+        $('#addPostForm').submit(function (event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            let newPost = {
+                id: posts.length + 1,
+                title: $('#titleInput').val(), // Set title from input field
+                imageUrl: URL.createObjectURL($('#imageInput')[0].files[0]),
+                // Removed comment from new post
+                likes: 0,
+                likesCount: 0,
+                comments: []
+            };
+            posts.push(newPost);
+            renderPosts();
+            // Clear form inputs
+            $('#imageInput').val('');
+            $('#titleInput').val('');
+        });
+
+        
+        $(document).on('click', '.like-btn', function () {
+            let postId = $(this).data('post-id');
+            let post = posts.find(p => p.id === postId);
+            post.likes++;
+            post.likesCount++;
+            $(this).find('.like-count').text(post.likesCount);
+            renderPosts();
+        });
+
+        
+        $(document).on('click', '.comment-btn', function () {
+            let postId = $(this).data('post-id');
+            $(`#commentSection-${postId}`).toggle();
+        });
+
+        
+        $(document).on('click', '.comment-submit-btn', function () {
+            let postId = $(this).data('post-id');
+            let comment = $(`.comment-input[data-post-id="${postId}"]`).val();
+            let post = posts.find(p => p.id === postId);
+            post.comments.push(comment);
+            renderPosts();
+            // Clear comment input
+            $(`.comment-input[data-post-id="${postId}"]`).val('');
+        });
+
+        
+        $(document).on('click', '.post-image', function () {
+            let postId = $(this).data('post-id');
+            let post = posts.find(p => p.id === postId);
+            let fullImageUrl = post.imageUrl; // Get the URL of the full-size image
+
+           let modal = document.getElementById("myModal");
+            let modalImg = document.getElementById("fullImage");
+            modal.style.display = "block";
+            modalImg.src = fullImageUrl;
+
+            
+            let span = document.getElementsByClassName("close")[0];
+            span.onclick = function() {
+                modal.style.display = "none";
+            };
+        });
+    </script>
+</body>
+</html>

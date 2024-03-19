@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion FAQ</title>
+  <link rel="stylesheet" href="faq.css">
+</head>
+
+<body>
+
+  <div class="accordion">
+    <div class="accordion-item active">
+      <div class="accordion-title">Question 1: What is WitchNet?</div>
+      <div class="accordion-content">
+        <p>WitchNet is a social media platform designed for the witchcraft community. It allows users to share stickers, interact with the community, and chat with other members.
+        </p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-title">Question 2: How can I join WitchNet?</div>
+      <div class="accordion-content">
+        <p>You can join WitchNet by visiting our website and signing up for an account</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+        <div class="accordion-title">Question 3: Is my password safe</div>
+        <div class="accordion-content">
+          <p>Yes, your password is safe. It's encrypted in our database, ensuring even our database managers can't access it.</p>
+        </div>
+      </div>
+    <div class="accordion-item">
+      <div class="accordion-title">Question 4: Is WitchNet free to use?</div>
+      <div class="accordion-content">
+        <p>Yes, WitchNet is free to use. There are no subscription fees or hidden charges.
+        </p>
+      </div>
+    </div>
+    <div class="accordion-item">
+        <div class="accordion-title">Question 5: How can I interact with other users on WitchNet?</div>
+        <div class="accordion-content">
+          <p>You can interact with other users on WitchNet by liking, commenting, and sharing their posts. You can also join groups and participate in discussions.
+        </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-title">Question 6: Is there a chat feature on WitchNet?</div>
+        <div class="accordion-content">
+          <p>Yes, WitchNet has a built-in chat feature that allows you to chat with other members privately or in group chats.
+        </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-title">Question 7:How do I report inappropriate content on WitchNet?</div>
+        <div class="accordion-content">
+          <p>If you come across any inappropriate content on WitchNet, you can report it by clicking on the three dots (...) on the post and selecting "Report." Our team will review the report and take appropriate action.
+          </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-title">Question 8: Are there any community guidelines I need to follow on WitchNet?</div>
+        <div class="accordion-content">
+          <p>Yes, WitchNet has community guidelines that all users are expected to follow. These guidelines promote a safe and respectful environment for all members of the community.
+        </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-title">Question 9: Can I customize my profile on WitchNet?</div>
+        <div class="accordion-content">
+          <p>Yes, you can customize your profile on WitchNet by adding a profile picture, writing a bio, and choosing a username.
+        </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-title">Question 10: How do I invite my friends to join WitchNet?</div>
+        <div class="accordion-content">
+          <p>You can invite your friends to join WitchNet by sharing your referral link with them. You can find your referral link in the settings menu of the app or website.        </p>
+        </div>
+      </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const items = document.querySelectorAll(".accordion-item");
+
+      items.forEach((item) => {
+        item.addEventListener("click", function () {
+          if (!this.classList.contains("active")) {
+            closeAllAccordions();
+            this.classList.add("active");
+          }
+        });
+      });
+
+      // Open the first accordion item on load
+      items[0].classList.add("active");
+    });
+
+    function closeAllAccordions() {
+      const items = document.querySelectorAll(".accordion-item");
+      items.forEach((item) => {
+        item.classList.remove("active");
+      });
+    }
+  </script>
+</body>
+
+</html>

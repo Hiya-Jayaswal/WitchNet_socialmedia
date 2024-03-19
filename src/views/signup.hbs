@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="css/signup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <div class="left-panel">
+                <img src="/images/signup.jpg" alt="Sign Up Image">
+            </div>
+            <div class="right-panel">
+                <div class="content">
+                    <header>Sign Up</header>
+                    <form action="/signup" method="post">
+                        <div class="field">
+                            <span class="fa fa-user"></span>
+                            <input type="text" name="name" required placeholder="Username">
+                        </div>
+                        <div class="field space">
+                            <span class="fa fa-lock"></span>
+                            <input type="password" name="password" class="pass-key" required placeholder="Password">
+                            <span class="show">SHOW</span>
+                        </div>
+                        <div class="field space">
+                            <span class="fa fa-user"></span>
+                            <input type="text" name="fullName" required placeholder="Full Name">
+                        </div>
+                        <div class="field space">
+                            <span class="fa fa-phone"></span>
+                            <input type="text" name="phone" required placeholder="Phone Number">
+                        </div>
+                        <div class="field space">
+                            <span class="fa fa-calendar"></span>
+                            <input type="date" name="dob" required placeholder="Date of Birth">
+                        </div>
+                        <div class="field">
+                            <input type="submit" value="Sign Up">
+                        </div>
+                    </form>
+                    <div class="login">Already have an account? <a href="/">Login Now</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const pass_field = document.querySelector('.pass-key');
+        const showBtn = document.querySelector('.show');
+        showBtn.addEventListener('click', function(){
+            if(pass_field.type === "password"){
+                pass_field.type = "text";
+                showBtn.textContent = "HIDE";
+                showBtn.style.color = "#3498db";
+            }else{
+                pass_field.type = "password";
+                showBtn.textContent = "SHOW";
+                showBtn.style.color = "#222";
+            }
+        });
+    </script>
+</body>
+</html>
